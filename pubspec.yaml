@@ -1,0 +1,29 @@
+name: "ui_palette"
+environment:
+  sdk: ">=2.9.0 <3.0.0"
+
+dependencies:
+  equatable: ^1.2.6
+
+  # Flutter deps
+  flutter:
+    sdk: flutter
+
+  # Local deps
+  app_utils:
+    git: https://github.com/AnimeDart/dart-utils
+
+dev_dependencies:
+  effective_dart: ^1.0.0
+  test: ^1.15.7
+
+  hanzo: ^1.0.2 # Install/Enable Git Hooks for Dart
+  process_run: ^0.11.2+8
+
+  # Flutter deps
+  flutter_test:
+    sdk: flutter
+
+  # Local deps
+  commit_formatter:
+    git: https://github.com/AnimeDart/commit-formatter
