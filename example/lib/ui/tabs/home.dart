@@ -1,20 +1,32 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ui_palette_example/navigation/app_navigator.dart' as navigator;
 import 'package:ui_palette_example/ui/constants/dp.dart';
 import 'package:ui_palette_example/ui/widgets/app_bar_action.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../navigation/module_navigator.dart';
 import '../../navigation/tab_navigator.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key}) : super(key: key);
+  const HomeScreen({Key key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scrollController = ScrollController();
+
+  void _openFilterBottomSheet() {}
+
   @override
   Widget build(BuildContext context) {
     final overlayColor =
@@ -37,43 +49,70 @@ class _HomeScreenState extends State<HomeScreen> {
             systemNavigationBarDividerColor: overlayColor,
             systemNavigationBarIconBrightness: overlayIconBrightness,
           ),
-          child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                floating: true,
-                toolbarHeight: kToolbarHeight,
-                title: Opacity(opacity: 0.5, child: Text('Browse')),
-                actions: [
-                  AppBarAction(icon: Icon(Icons.search)),
-                  AppBarAction(icon: Icon(Icons.more_vert)),
-                ],
-              ),
-              SliverPadding(
-                padding: EdgeInsets.all(k1dp),
-                sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: k1dp,
-                    crossAxisSpacing: k1dp,
-                    childAspectRatio: 1 / 1.5,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (_, __) {
-                      return Card(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(k1dp),
-                          onTap: () => {},
-                          child: Container(height: 200),
-                        ),
-                      );
-                    },
-                    childCount: 50,
-                  ),
+          child: RefreshIndicator(
+            displacement: kToolbarHeight,
+            onRefresh: () async => {},
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  floating: true,
+                  toolbarHeight: kToolbarHeight,
+                  title: Opacity(opacity: 0.5, child: Text('Browse')),
+                  actions: [
+                    AppBarAction(
+                      icon: Icon(Icons.filter_list_rounded),
+                      onTap: _openFilterBottomSheet,
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                SliverPadding(
+                  padding: EdgeInsets.all(k1dp),
+                  sliver: HomeImageList(),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class HomeImageList extends StatefulWidget {
+  const HomeImageList({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _HomeImageListState createState() => _HomeImageListState();
+}
+
+class _HomeImageListState extends State<HomeImageList> {
+  static const _cardWidth = 150.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: MediaQuery.of(context).size.width ~/ _cardWidth,
+        mainAxisSpacing: k1dp,
+        crossAxisSpacing: k1dp,
+        childAspectRatio: 1 / 1.5,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (_, index) {
+          return Card(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(k1dp),
+              onTap: () {},
+              child: Image.network(
+                'https://picsum.photos/seed/picsum/200/300',
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

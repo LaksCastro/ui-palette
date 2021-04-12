@@ -61,7 +61,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigator.rootNavigator,
       debugShowCheckedModeBanner: false,
-      theme: monoThemes[Colors.cyan](Brightness.dark),
+      theme: monoThemes[Colors.cyan](Brightness.light),
       builder: (context, widget) {
         return ScrollConfiguration(
           behavior: AppScrollBehavior(),
